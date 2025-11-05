@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unwordled - Find Today's Wordle Answer</title>
+    
+    <meta name="description" content="Find today's Wordle answer instantly! Unwordled reveals daily Wordle solutions, past answers, and future puzzles. Never get stuck on Wordle again.">
+    <meta name="keywords" content="wordle answer, wordle solver, wordle cheat, today's wordle, wordle solution, daily wordle answer, wordle hint, wordle help">
+    <meta name="author" content="Unwordled">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="1 days">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://luciferreeves.github.io/unwordled/">
+    <meta property="og:title" content="Unwordled - Today's Wordle Answer" id="ogTitle">
+    <meta property="og:description" content="Find today's Wordle answer and explore past solutions instantly!" id="ogDescription">
+    <meta property="og:image" content="https://luciferreeves.github.io/unwordled/og-image.png" id="ogImage">
+    <meta property="og:site_name" content="Unwordled">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://luciferreeves.github.io/unwordled/">
+    <meta name="twitter:title" content="Unwordled - Today's Wordle Answer" id="twitterTitle">
+    <meta name="twitter:description" content="Find today's Wordle answer and explore past solutions instantly!" id="twitterDescription">
+    <meta name="twitter:image" content="https://luciferreeves.github.io/unwordled/og-image.png" id="twitterImage">
+    
+    <link rel="canonical" href="https://luciferreeves.github.io/unwordled/">
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Unwordled",
+      "description": "Find today's Wordle answer and explore daily Wordle solutions from past and future dates.",
+      "url": "https://luciferreeves.github.io/unwordled/",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Unwordled</h1>
+            <p class="subtitle">Discover Today's Wordle Answer</p>
+        </header>
+
+        <div class="controls">
+            <button class="theme-toggle" id="themeToggle">
+                <svg class="icon" id="themeIcon" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                </svg>
+                <span id="themeText">Light Mode</span>
+            </button>
+        </div>
+
+        <div id="errorContainer"></div>
+
+        <div class="answer-card">
+            <div class="date-label" id="dateLabel">Loading...</div>
+            <div class="answer-display" id="answerDisplay">
+                <div class="loading">Fetching answer...</div>
+            </div>
+            <div class="meta-info" id="metaInfo"></div>
+            <div class="share-section">
+                <button class="btn" id="shareBtn">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                    </svg>
+                    Share Link
+                </button>
+                <button class="btn" id="copyAnswerBtn">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                    </svg>
+                    Copy: <span id="answerPreview" style="font-family: 'Fira Code', monospace; font-weight: 700;">-----</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="calendar-card">
+            <div class="calendar-header">
+                <div class="calendar-title-group">
+                    <div class="custom-select" id="monthSelect">
+                        <div class="select-display">
+                            <span id="monthDisplay">January</span>
+                            <svg class="select-arrow" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </div>
+                        <div class="select-dropdown" id="monthDropdown"></div>
+                    </div>
+                    <div class="custom-select" id="yearSelect">
+                        <div class="select-display">
+                            <span id="yearDisplay">2025</span>
+                            <svg class="select-arrow" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </div>
+                        <div class="select-dropdown" id="yearDropdown"></div>
+                    </div>
+                </div>
+                <div class="calendar-controls">
+                    <button class="btn btn-today" id="todayBtn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                        </svg>
+                        Today
+                    </button>
+                    <button class="nav-btn" id="prevMonth">
+                        <svg class="icon-sm" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                    </button>
+                    <button class="nav-btn" id="nextMonth">
+                        <svg class="icon-sm" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="calendar-grid">
+                <div class="day-label">Sun</div>
+                <div class="day-label">Mon</div>
+                <div class="day-label">Tue</div>
+                <div class="day-label">Wed</div>
+                <div class="day-label">Thu</div>
+                <div class="day-label">Fri</div>
+                <div class="day-label">Sat</div>
+            </div>
+            <div class="calendar-grid" id="calendarDays"></div>
+        </div>
+    </div>
+
+    <canvas id="ogCanvas" style="display: none;"></canvas>
+    <script src="og-generator.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

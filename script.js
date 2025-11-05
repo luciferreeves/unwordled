@@ -114,16 +114,6 @@ function getWordleLaunchDate() {
     return launchDate;
 }
 
-/**
- * @param {Date} date
- * @returns {boolean}
- */
-function isDateAllowed(date) {
-    const maxDate = getMaxAllowedDate();
-    const launchDate = getWordleLaunchDate();
-    return date >= launchDate && date <= maxDate;
-}
-
 const urlParams = new URLSearchParams(window.location.search);
 const dateParam = urlParams.get('date');
 let selectedDate = dateParam ? parseDateParam(dateParam) : new Date();
@@ -217,11 +207,8 @@ document.addEventListener('click', closeAllDropdowns);
 async function fetchWordleAnswer(date) {
     const apiDate = formatDateForAPI(date);
     const url = `https://www.nytimes.com/svc/wordle/v2/${apiDate}.json`;
-    
     const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error('Answer not available for this date');
-    }
+    if (!response.ok) throw new Error('Answer not available for this date');
     return await response.json();
 }
 
@@ -252,18 +239,9 @@ function displayAnswer(data, date) {
     const editor = data.editor || '---';
 
     metaInfo.innerHTML = `
-        <div class="meta-item">
-            <div class="meta-label">Puzzle #</div>
-            <div class="meta-value">${data.id}</div>
-        </div>
-        <div class="meta-item">
-            <div class="meta-label">Days Since Launch</div>
-            <div class="meta-value">${daysSinceLaunch}</div>
-        </div>
-        <div class="meta-item">
-            <div class="meta-label">Editor</div>
-            <div class="meta-value">${editor}</div>
-        </div>
+        <div class="meta-item"><div class="meta-label">Puzzle #</div><div class="meta-value">${data.id}</div></div>
+        <div class="meta-item"><div class="meta-label">Days Since Launch</div><div class="meta-value">${daysSinceLaunch}</div></div>
+        <div class="meta-item"><div class="meta-label">Editor</div><div class="meta-value">${editor}</div></div>
     `;
 }
 
@@ -284,11 +262,9 @@ function showToast(message) {
     const toast = document.createElement('div');
     toast.className = 'success-toast';
     toast.innerHTML = `
-        <svg style="width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.5;" viewBox="0 0 24 24">
+        <svg style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-        </svg>
-        ${message}
-    `;
+        </svg>${message}`;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
 }
@@ -313,17 +289,7 @@ async function updateMetaTags(data, date) {
     }
 
     document.title = title;
-    document.querySelector('meta[property="og:title"]').setAttribute('content', title);
-    document.querySelector('meta[property="og:description"]').setAttribute('content', description);
-    document.querySelector('meta[name="twitter:title"]').setAttribute('content', title);
-    document.querySelector('meta[name="twitter:description"]').setAttribute('content', description);
     document.querySelector('meta[name="description"]').setAttribute('content', description);
-    
-    if (typeof window.generateOGImage === 'function') {
-        const ogImageDataUrl = await window.generateOGImage(data, date);
-        document.querySelector('meta[property="og:image"]').setAttribute('content', ogImageDataUrl);
-        document.querySelector('meta[name="twitter:image"]').setAttribute('content', ogImageDataUrl);
-    }
 }
 
 /**
@@ -337,8 +303,7 @@ async function loadAnswer(date) {
         await updateMetaTags(data, date);
     } catch (error) {
         showError(error.message);
-        document.getElementById('answerDisplay').innerHTML = 
-            '<div class="loading">Unable to load answer</div>';
+        document.getElementById('answerDisplay').innerHTML = '<div class="loading">Unable to load answer</div>';
     }
 }
 
@@ -354,6 +319,32 @@ function updateURL() {
     window.history.pushState({}, '', newUrl);
 }
 
+/**
+ * @param {string} text
+ * @returns {void}
+ */
+function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showToast('Copied!')).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+}
+
+/**
+ * @param {string} text
+ * @returns {void}
+ */
+function fallbackCopy(text) {
+    const temp = document.createElement('textarea');
+    temp.value = text;
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand('copy');
+    document.body.removeChild(temp);
+    showToast('Copied!');
+}
+
 document.getElementById('shareBtn').addEventListener('click', async () => {
     if (!currentAnswer) return;
 
@@ -366,15 +357,9 @@ document.getElementById('shareBtn').addEventListener('click', async () => {
 
     if (navigator.share) {
         try {
-            await navigator.share({
-                title: 'Unwordled',
-                text: shareText,
-                url: shareUrl
-            });
+            await navigator.share({ title: 'Unwordled', text: shareText, url: shareUrl });
         } catch (err) {
-            if (err.name !== 'AbortError') {
-                copyToClipboard(shareUrl);
-            }
+            if (err.name !== 'AbortError') copyToClipboard(shareUrl);
         }
     } else {
         copyToClipboard(shareUrl);
@@ -382,29 +367,14 @@ document.getElementById('shareBtn').addEventListener('click', async () => {
 });
 
 document.getElementById('copyAnswerBtn').addEventListener('click', () => {
-    if (!currentAnswer) return;
-    const text = currentAnswer.solution.toUpperCase();
-    copyToClipboard(text);
+    if (currentAnswer) copyToClipboard(currentAnswer.solution.toUpperCase());
 });
-
-/**
- * @param {string} text
- * @returns {void}
- */
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        showToast('Copied to clipboard!');
-    }).catch(() => {
-        showToast('Failed to copy');
-    });
-}
 
 /**
  * @returns {void}
  */
 function renderCalendar() {
     const calendarDays = document.getElementById('calendarDays');
-
     const year = currentCalendarMonth.getFullYear();
     const month = currentCalendarMonth.getMonth();
 

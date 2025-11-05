@@ -565,6 +565,91 @@ h1 {
     gap: 10px;
 }
 
+.footer {
+    text-align: center;
+    margin-top: 60px;
+    padding: 40px 20px 20px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.footer-text {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.heart {
+    color: #e74c3c;
+    animation: heartbeat 1.5s ease-in-out infinite;
+    display: inline-block;
+}
+
+.footer-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.footer-link:hover {
+    color: var(--accent-dark);
+}
+
+.separator {
+    margin: 0 10px;
+    opacity: 0.5;
+}
+
+.github-icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.footer-copyright {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    margin-top: 10px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 60px;
+    padding: 40px 20px 20px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+}
+
+footer p {
+    margin-bottom: 10px;
+}
+
+footer a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+}
+
+footer a:hover {
+    opacity: 0.8;
+}
+
+footer .github-link {
+    color: var(--text-secondary);
+}
+
+footer .copyright {
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
 @keyframes slideIn {
     from {
         transform: translateX(400px);
@@ -584,6 +669,18 @@ h1 {
     to {
         transform: translateX(400px);
         opacity: 0;
+    }
+}
+
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    10%, 30% {
+        transform: scale(1.1);
+    }
+    20%, 40% {
+        transform: scale(1);
     }
 }
 

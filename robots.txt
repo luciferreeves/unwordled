@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://luciferreeves.github.io/unwordled/sitemap.xml

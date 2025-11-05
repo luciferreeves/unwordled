@@ -206,10 +206,30 @@ document.addEventListener('click', closeAllDropdowns);
  */
 async function fetchWordleAnswer(date) {
     const apiDate = formatDateForAPI(date);
-    const url = `https://www.nytimes.com/svc/wordle/v2/${apiDate}.json`;
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Answer not available for this date');
-    return await response.json();
+    const proxyBase = "https://wordle-proxy.bobbyskhs.workers.dev";
+
+    try {
+        const response = await fetch(`${proxyBase}/?date=${apiDate}`, {
+            headers: {
+                "Accept": "application/json",
+            },
+            cache: "no-cache",
+        });
+
+        if (!response.ok) {
+            throw new Error(`Answer not available for ${apiDate}`);
+        }
+
+        const data = await response.json();
+        if (!data || !data.solution) {
+            throw new Error("Invalid data received from proxy");
+        }
+
+        return data;
+    } catch (error) {
+        console.error("Wordle fetch error:", error);
+        throw new Error("Failed to fetch Wordle data");
+    }
 }
 
 /**
